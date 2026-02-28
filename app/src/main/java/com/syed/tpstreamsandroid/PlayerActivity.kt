@@ -1,6 +1,7 @@
 package com.syed.tpstreamsandroid
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.tpstream.player.ui.TpStreamPlayerFragment
 import com.tpstream.player.ui.InitializationListener
@@ -16,6 +17,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
