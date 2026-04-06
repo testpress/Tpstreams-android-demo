@@ -2,20 +2,18 @@ package com.syed.tpstreamsandroid
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tpstream.player.ui.TpStreamPlayerFragment
-import com.tpstream.player.ui.InitializationListener
-import com.tpstream.player.TpStreamPlayer
-import com.tpstream.player.TpInitParams
-import com.tpstream.player.TPStreamsSDK
-import com.syed.tpstreamsandroid.R
-
 import androidx.activity.enableEdgeToEdge
+import com.tpstreams.player.TPStreamsSDK
+import com.tpstreams.player.TPStreamsPlayer
+import com.tpstreams.player.TPStreamsPlayerView
+import androidx.media3.common.util.UnstableApi
+import androidx.annotation.OptIn
 
+@OptIn(UnstableApi::class)
 class PlayerActivity : AppCompatActivity() {
-    private lateinit var playerFragment: TpStreamPlayerFragment
+    private var player: TPStreamsPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
@@ -23,18 +21,15 @@ class PlayerActivity : AppCompatActivity() {
         val accessToken = intent.getStringExtra("access_token") ?: return
         val orgCode = intent.getStringExtra("org_code") ?: return
 
-        TPStreamsSDK.initialize(TPStreamsSDK.Provider.TPStreams, orgCode)
+        TPStreamsSDK.init(orgCode)
 
-        playerFragment = supportFragmentManager.findFragmentById(R.id.tpstream_player_fragment) as TpStreamPlayerFragment
+        player = TPStreamsPlayer.create(this, assetId, accessToken)
+        val playerView = findViewById<TPStreamsPlayerView>(R.id.player_view)
+        playerView.player = player
+    }
 
-        playerFragment.setOnInitializationListener(object : InitializationListener {
-            override fun onInitializationSuccess(player: TpStreamPlayer) {
-                val parameters = TpInitParams.Builder()
-                    .setVideoId(assetId)
-                    .setAccessToken(accessToken)
-                    .build()
-                player.load(parameters)
-            }
-        })
+    override fun onDestroy() {
+        super.onDestroy()
+        player?.release()
     }
 }

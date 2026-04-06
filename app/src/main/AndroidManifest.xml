@@ -29,6 +29,7 @@
         <activity
             android:name=".PlayerActivity"
             android:exported="false"
+            android:configChanges="orientation|screenSize|layoutDirection|smallestScreenSize|screenLayout|density"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
